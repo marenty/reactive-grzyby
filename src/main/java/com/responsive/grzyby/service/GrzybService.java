@@ -1,5 +1,6 @@
-package com.example.demo;
+package com.responsive.grzyby.service;
 
+import com.responsive.grzyby.model.Grzyb;
 import org.springframework.stereotype.Service;
 
 @Service

@@ -1,13 +1,13 @@
-package com.example.demo;
+package com.responsive.grzyby.controller;
 
+import com.responsive.grzyby.model.Grzyb;
+import com.responsive.grzyby.service.GrzybService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 @RestController
@@ -86,5 +86,60 @@ public class GrzybController {
         );
     }
 
+    @GetMapping("/api/grzyb5")
+    public Mono<Grzyb> grzybGet5() {
+
+        Grzyb grzyb1 = new Grzyb(1, "Gąbczasty", "Maślak", false);
+
+        return Mono.just(grzyb1)
+                .map(grzyb -> {
+                    grzyb.setId(2);
+                    return grzyb; })
+                .log()
+                .filter(grzyb -> grzyb.getId() != 2)
+                .log();
+    }
+
+    @GetMapping("/api/grzyb6")
+    public Mono<Grzyb> grzybGet6() {
+
+        Grzyb grzyb1 = new Grzyb(1, "Gąbczasty", "Maślak", false);
+
+        return Mono.just(grzyb1)
+                .doOnNext(System.out::println)
+                .doOnSuccess(grzyb -> System.out.println("Koniec"))
+                .then(Mono.empty());
+
+    }
+
+    @GetMapping("/api/grzyb7")
+    public Mono<String> grzybGet7() {
+
+        Grzyb grzyb1 = new Grzyb(1, "Gąbczasty", "Maślak", false);
+
+        Grzyb grzyb2 = new Grzyb(2,  "Trujacy", "Muchomor", false);
+
+        Mono<Grzyb> mono1 = Mono.just(grzyb1).doOnNext(System.out::println);
+
+        Mono<Grzyb> mono2 = Mono.just(grzyb2).doOnNext(System.out::println);
+
+        return Mono.when(mono1, mono2).then(Mono.just("Grzyby pobrane"));
+
+    }
+
+    @GetMapping("/api/grzyb8")
+    public Mono<Void> grzybGet8() {
+
+        Grzyb grzyb1 = new Grzyb(1, "Gąbczasty", "Maślak", false);
+
+        Mono<RuntimeException> error = Mono.error(RuntimeException::new);
+
+        Mono<Grzyb> mono1 = Mono.just(grzyb1);
+
+        Mono<Void> finalMono = Mono.when(mono1, error).then(Mono.empty());
+
+        return finalMono.doOnError(err -> System.out.println("Ojej"));
+
+    }
 
 }
