@@ -45,4 +45,12 @@ public class MapController {
         return Mono.just(strings).flatMapIterable(str -> str.subList(0, 2));
     }
 
+    @GetMapping("/api/flux/concat_map")
+    public Flux<byte[]> concatMapFlux() {
+
+        List<String> strings = Arrays.asList("Kot", "Pies", "Post", "Chleb");
+
+        return Flux.fromIterable(strings).concatMap(str -> Mono.just(str.getBytes()));
+    }
+
 }
